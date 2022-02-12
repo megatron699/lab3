@@ -65,17 +65,22 @@ class NeuralNetwork:
         sko = 0
         target_arr = []
         rmse_arr = []
+        expected_arr = []
         for epoch in range(epochs):
             sko = 0
             window_size = len(kohonen_outputs_windows[0])
             for window_index in range(len(kohonen_outputs_windows) - 1):
+
                 target = kohonen_outputs_windows[window_index]
                 expected = [kohonen_outputs_windows[window_index + 1][window_size - 1]]
                 sko += math.sqrt(self._back_propagation(expected, target) / (window_index + 1))
+                expected_arr.append(expected)
+                target_arr.append(target)
 
             print("epoch: {} - {}".format(epoch, math.sqrt(sko / (EPOCHS - 1))))
             rmse_arr.append(math.sqrt(sko / (EPOCHS - 1)))
-        return math.sqrt(sko / (EPOCHS - 1)), rmse_arr
+
+        return math.sqrt(sko / (EPOCHS - 1)), rmse_arr, target_arr, expected_arr
 
     def test(self, kohonen_outputs_windows, data_list, window_size=WINDOW_SIZE):
         sko = 0
